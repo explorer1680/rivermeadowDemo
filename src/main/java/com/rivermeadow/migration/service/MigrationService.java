@@ -111,7 +111,6 @@ public class MigrationService {
 	}
 
 	public Migration runMigration(Long id) throws MigrationAlreadyRun, InterruptedException {
-		System.out.println("*******************************");
 		Migration migration = migrationRepository.findById(id).get();
 		if(migration.getMigrationStatus().equals(MigrationStatus.RUNNING)){//it is running now
 			throw new MigrationAlreadyRun(id);
@@ -128,7 +127,7 @@ public class MigrationService {
 		if (selectedVolume.stream().filter(p -> p.getMountPoint().equalsIgnoreCase("C:\\")).collect(Collectors.toList())
 				.size() > 0) {
 			
-			Thread.sleep(60000);
+			Thread.sleep(60000);//setup 1 min
 			
 			Set<Volume> volumeSet = new HashSet<>();
 			migration.getSource().getVolumeSet().stream().filter(p -> slectedMountPointList.contains(p.getMountPoint())).forEach(p -> volumeSet.add(p));

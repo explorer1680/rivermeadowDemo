@@ -1,2 +1,247 @@
+
+step 1: clone from follwing place:
+github: https://github.com/explorer1680/rivermeadowDemo.git
+
+step 2: run docker container for mysql
 run db with docker:
 docker container run --name mysql -e MYSQL_USER=dev -e MYSQL_PASSWORD=dev -e MYSQL_DATABASE=migration_app -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 -d mysql/mysql-server:5.7
+
+step 3: go to the project dir run:
+mvn clean spring-boot:run
+
+following is the curl command to access the service: (generated fron Postman)
+
+the api support json and xml, use header 'Accept: application/xml' and 'Content-Type: application/xml' to change the type.
+
+Workload:
+1. GET
+curl --location --request GET 'http://localhost:8080/workloads/192.168.1.11' \
+--header 'Accept: application/xml'
+
+2. POST
+curl --location --request POST 'http://localhost:8080/workloads' \
+--header 'Content-Type: application/xml' \
+--data-raw '<Workload>
+    <ipAddress>192.168.1.1</ipAddress>
+    <credentials>
+        <username>ethan</username>
+        <password>password</password>
+        <domain>localhost</domain>
+    </credentials>
+    <volumeSet>
+        <volumeSet>
+            <mountPoint>E:\</mountPoint>
+            <size>30</size>
+        </volumeSet>
+        <volumeSet>
+            <mountPoint>C:\</mountPoint>
+            <size>10</size>
+        </volumeSet>
+        <volumeSet>
+            <mountPoint>D:\</mountPoint>
+            <size>20</size>
+        </volumeSet>
+    </volumeSet>
+</Workload>'
+
+3. DELETE
+curl --location --request DELETE 'http://localhost:8080/workloads/192.168.1.10'
+
+4. PUT(update)
+curl --location --request PUT 'http://localhost:8080/workloads' \
+--header 'Content-Type: application/xml' \
+--data-raw '<Workload>
+    <ipAddress>192.168.1.12</ipAddress>
+    <credentials>
+        <username>ethan123</username>
+        <password>password123</password>
+        <domain>localhost</domain>
+    </credentials>
+    <volumeSet>
+        <volumeSet>
+            <mountPoint>E:\</mountPoint>
+            <size>30</size>
+        </volumeSet>
+        <volumeSet>
+            <mountPoint>C:\</mountPoint>
+            <size>10</size>
+        </volumeSet>
+        <volumeSet>
+            <mountPoint>D:\</mountPoint>
+            <size>20</size>
+        </volumeSet>
+    </volumeSet>
+</Workload>'
+
+TargetLoad:
+1. GET
+curl --location --request GET 'http://localhost:8080/targetclouds/4'
+
+2. POST
+curl --location --request POST 'http://localhost:8080/targetclouds' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+
+    "cloudType": "AWS",
+    "credentials": {
+        "username": "Jack",
+        "password": "password",
+        "domain": "www.google.com"
+    },
+    "workload": {
+        "ipAddress": "192.168.1.1",
+        "credentials": {
+            "username": "ethan",
+            "password": "password",
+            "domain": "localhost"
+        }
+
+    }
+}'
+
+3. DELETE
+curl --location --request DELETE 'http://localhost:8080/targetclouds/2'
+
+4. PUT
+curl --location --request PUT 'http://localhost:8080/targetclouds' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--data-raw '{
+    "id": 15,
+    "cloudType": "vcloud",
+    "credentials": {
+        "username": "Jack",
+        "password": "password",
+        "domain": "www.google.com"
+    },
+    "workload": {
+        "ipAddress": "192.168.1.1",
+        "credentials": {
+            "username": "ethan",
+            "password": "password",
+            "domain": "localhost"
+        },
+        "volumeSet": [
+            {
+                "mountPoint": "E:\\",
+                "size": 30
+            },
+            {
+                "mountPoint": "D:\\",
+                "size": 20
+            },
+            {
+                "mountPoint": "C:\\",
+                "size": 10
+            }
+        ]
+    }
+}'
+
+Migration:
+
+1. GET
+curl --location --request GET 'http://localhost:8080/migrations/7'
+
+2. POST
+curl --location --request POST 'http://localhost:8080/migrations' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+
+    "selectedVolume": [
+
+                {
+            "mountPoint": "D:\\",
+            "size": 20
+        }
+    ],
+    "source": {
+        "ipAddress": "192.168.1.1"
+    },
+    "target": {
+        "id": 4
+    }
+}'
+
+3. DELETE
+curl --location --request DELETE 'http://localhost:8080/migrations/10'
+
+4. PUT (update)
+curl --location --request PUT 'http://localhost:8080/migrations' \
+--header 'Content-Type: application/json' \
+--data-raw '{
+    "id": 10,
+    "selectedVolume": [
+        {
+            "mountPoint": "C:\\",
+            "size": 10
+        },
+        {
+            "mountPoint": "D:\\",
+            "size": 20
+        },
+        {
+            "mountPoint": "E:\\",
+            "size": 30
+        }
+    ],
+    "source": {
+        "ipAddress": "192.168.1.2",
+        "credentials": {
+            "username": "ethan",
+            "password": "password",
+            "domain": "localhost"
+        },
+        "volumeSet": [
+            {
+                "mountPoint": "E:\\",
+                "size": 30
+            },
+            {
+                "mountPoint": "C:\\",
+                "size": 10
+            },
+            {
+                "mountPoint": "D:\\",
+                "size": 20
+            }
+        ]
+    },
+    "target": {
+        "id": 3,
+        "cloudType": "vsphere",
+        "credentials": {
+            "username": "Jack",
+            "password": "password",
+            "domain": "www.google.com"
+        },
+        "workload": {
+            "ipAddress": "192.168.1.1",
+            "credentials": {
+                "username": "ethan",
+                "password": "password",
+                "domain": "localhost"
+            },
+            "volumeSet": [
+                {
+                    "mountPoint": "E:\\",
+                    "size": 30
+                },
+                {
+                    "mountPoint": "C:\\",
+                    "size": 10
+                },
+                {
+                    "mountPoint": "D:\\",
+                    "size": 20
+                }
+            ]
+        }
+    }
+}'
+
+5, PUT (run migration)
+curl --location --request PUT 'http://localhost:8080/migrations/9/run'
+
+6. GET (check status_
+curl --location --request GET 'http://localhost:8080/migrations/9/status'
