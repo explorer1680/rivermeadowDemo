@@ -7,13 +7,26 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.junit.Before;
+import org.junit.Rule;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.runner.JUnitPlatform;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+import static org.mockito.Mockito.*;
+
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.junit.MockitoRule;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.ReflectionUtils;
 
 import com.rivermeadow.migration.data.MigrationRepository;
 import com.rivermeadow.migration.model.Migration;
@@ -24,13 +37,18 @@ import com.rivermeadow.migration.model.Workload;
 import com.rivermeadow.migration.model.WorkloadEmbaddable;
 import com.rivermeadow.migration.service.exception.MigrationAlreadyRun;
 
-@SpringBootTest
-//@Disabled
+//@SpringBootTest
+////@Disabled
 @RunWith(JUnitPlatform.class)
+@ExtendWith(MockitoExtension.class)
 public class ServiceTest {
 
+	
 	@Mock
 	private MigrationRepository migrationRepository;
+	
+	
+//	MigrationRepository migrationRepository = mock(MigrationRepository.class);
 
 	@InjectMocks // auto inject helloRepository
 	private MigrationService migrationService = new MigrationService();
@@ -39,6 +57,8 @@ public class ServiceTest {
 	@Test
 	public void testMigrationSelectedVolumeNoTHaveC() throws MigrationAlreadyRun, InterruptedException {
 
+//		ReflectionTestUtils.setField(migrationService, "migrationRepository", migrationRepository);
+		
 		Migration migrationWithoutC = new Migration();
 		migrationWithoutC.setId(1L);
 		Set<Volume> volumeSet = new HashSet<>();
